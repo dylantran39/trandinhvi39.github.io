@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Cài đặt và sử dụng OAuth 2.0 Server trong Laravel | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Trong bài viết này mình sẽ sử dụng plugin sau:https:&#x2F;&#x2F;github.com&#x2F;lucadegasperi&#x2F;oauth2-server-laravel 1. Cài đặt OAuth 2.0 pluginCách đơn giản nhất để cài đặt plugin này là sử dụng composer.Trong file">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cài đặt và sử dụng OAuth 2.0 Server trong Laravel">
+<meta property="og:url" content="http://yoursite.com/2019/11/11/setting-and-use-oauth-2-server-with-laravel/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Trong bài viết này mình sẽ sử dụng plugin sau:https:&#x2F;&#x2F;github.com&#x2F;lucadegasperi&#x2F;oauth2-server-laravel 1. Cài đặt OAuth 2.0 pluginCách đơn giản nhất để cài đặt plugin này là sử dụng composer.Trong file">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://viblo.asia/uploads/e502f126-1a25-4598-a163-f352d2acb054.png">
+<meta property="og:image" content="https://viblo.asia/uploads/99bcff40-aaa6-459f-8453-275082b5e700.png">
+<meta property="article:published_time" content="2019-11-11T04:51:14.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:52:38.483Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Oauth2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://viblo.asia/uploads/e502f126-1a25-4598-a163-f352d2acb054.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2019/11/11/setting-and-use-oauth-2-server-with-laravel/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-setting-and-use-oauth-2-server-with-laravel" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Cài đặt và sử dụng OAuth 2.0 Server trong Laravel
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/11/11/setting-and-use-oauth-2-server-with-laravel/" class="article-date">
+	  <time datetime="2019-11-11T04:51:14.000Z" itemprop="datePublished">11-11-2019</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Laravel/" rel="tag">Laravel</a>, <a class="article-tag-link" href="/tags/Oauth2/" rel="tag">Oauth2</a>, <a class="article-tag-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Trong bài viết này mình sẽ sử dụng plugin sau:<br><a href="https://github.com/lucadegasperi/oauth2-server-laravel" target="_blank" rel="noopener">https://github.com/lucadegasperi/oauth2-server-laravel</a></p>
+<h3 id="1-Cai-dat-OAuth-2-0-plugin"><a href="#1-Cai-dat-OAuth-2-0-plugin" class="headerlink" title="1. Cài đặt OAuth 2.0 plugin"></a>1. Cài đặt OAuth 2.0 plugin</h3><p>Cách đơn giản nhất để cài đặt plugin này là sử dụng composer.<br>Trong file composer.json thêm dòng code dưới đây vào trong mục require.Tiếp theo thì chạy lệnh composer update.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;require&quot;: &#123;</span><br><span class="line"> &quot;ucadegasperi&#x2F;oauth2-server-laravel&quot;: &quot;4.0.x@dev&quot;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>Khi composer đã cài đặt xong package này bạn cần làm thêm một số bước nhỏ sau:</p>
+<ul>
+<li>Thêm dòng code sau vào mảng providers trong file config/app.php<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#39;LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider&#39;,</span><br><span class="line">&#39;LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider&#39;,</span><br></pre></td></tr></table></figure></li>
+<li>Thêm dòng code sau vào mảng aliases trong file config/app.php<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#39;Authorizer&#39; &#x3D;&gt; &#39;LucaDegasperi\OAuth2Server\Facades\AuthorizerFacade&#39;,</span><br></pre></td></tr></table></figure>
+Mở file app/Http/Kernel.php</li>
+<li>Thêm dòng code sau vào mảng middleware<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#39;LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware&#39;</span><br></pre></td></tr></table></figure></li>
+<li>Xóa dòng code sau trong mảng middleware<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">App\Http\Middleware\VerifyCsrfToken</span><br></pre></td></tr></table></figure></li>
+<li>Thêm dòng code sau vào mảng routeMiddleware<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#39;csrf&#39; &#x3D;&gt; &#39;App\Http\Middleware\VerifyCsrfToken&#39;,</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-Setup-Database-va-test"><a href="#2-Setup-Database-va-test" class="headerlink" title="2. Setup Database và test"></a>2. Setup Database và test</h3><ul>
+<li><p>Đầu tiên chúng ta cần setup database ở file .env trong thư mục gốc</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DB_HOST&#x3D;localhost</span><br><span class="line">DB_DATABASE&#x3D;Mysql database name</span><br><span class="line">DB_USERNAME&#x3D;Mysql user name</span><br><span class="line">DB_PASSWORD&#x3D;Mysql password</span><br></pre></td></tr></table></figure></li>
+<li><p>Chạy lệnh sau ở terminal để publish cấu hình và migration của package này</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan vendor:publish</span><br></pre></td></tr></table></figure>
+<p>Lệnh trên sẽ tạo ra tất cả các file migration mà plugin này cần</p>
+</li>
+<li><p>Chạy lệnh sau để apply các file migrate vào database</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan migrate</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cấu hình OAuth server</strong></p>
+</li>
+</ul>
+<p>Chúng ta sẽ sử dụng Authorization Server với Password Grant.</p>
+<ul>
+<li><p>Mở file app/config/oauth2.php và thêm đoạn code sau vào mảng grant_types</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#39;password&#39; &#x3D;&gt; [</span><br><span class="line"> &#39;class&#39; &#x3D;&gt; &#39;League\OAuth2\Server\Grant\PasswordGrant&#39;,</span><br><span class="line"> &#39;access_token_ttl&#39; &#x3D;&gt; 604800,</span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F; the code to run in order to verify the user’s identity</span><br><span class="line"> &#39;callback&#39; &#x3D;&gt; function($username, $password)&#123;</span><br><span class="line"> $credentials &#x3D; [</span><br><span class="line"> &#39;email&#39; &#x3D;&gt; $username,</span><br><span class="line"> &#39;password&#39; &#x3D;&gt; $password,</span><br><span class="line"> ];</span><br><span class="line"></span><br><span class="line"> if (Auth::once($credentials)) &#123;</span><br><span class="line">       return Auth::user()-&gt;id;</span><br><span class="line">   &#125; else &#123;</span><br><span class="line">       return false;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure></li>
+<li><p>Chúng ta sẽ cần đến một route để sinh ra token sau khi truyền vào username và password, trong file app/Http/route.php thêm dòng code sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Route::post(&#39;oauth&#x2F;access_token&#39;, function() &#123;</span><br><span class="line"> return Response::json(Authorizer::issueAccessToken());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>Tạo client</p>
+<p>Ở đây cần nói rõ hơn một chút là Client chính là ứng dụng sử dụng OAuth server ví dụ như website, app android…<br>Chúng ta sẽ thêm vào một bảng ghi vào bảng oauth_client trong database.</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO &#39;oauth_clients&#39; (&#39;id&#39;, &#39;secret&#39;, &#39;name&#39;, &#39;created_at&#39;, &#39;updated_at&#39;) VALUES</span><br><span class="line">(&#39;f3d259ddd3ed8ff3843839b&#39;, &#39;4c7f6f8fa93d59c45502c0ae8c4a95b&#39;, &#39;Main website&#39;, &#39;2015–05–12 21:00:00&#39;,&#39;0000–00–00 00:00:00&#39;);</span><br></pre></td></tr></table></figure>
+<p>  Khi này thì client_id là f3d259ddd3ed8ff3843839b và client_secret là 4c7f6f8fa93d59c45502c0ae8c4a95b</p>
+</li>
+<li><p>Tạo user</p>
+<p>Chúng ta cần tạo ít nhất một user trong bảng users để test OAuth server.<br>Để đơn giản thì mình tạo luôn một route để cho phép tạo user</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Route::get(&#39;&#x2F;register &#39;, function()&#123;</span><br><span class="line"> $user &#x3D; new App\User();</span><br><span class="line"> $user-&gt;name&#x3D;&#39;test user&#39;;</span><br><span class="line"> $user-&gt;email&#x3D;&#39;test@test.com&#39;;</span><br><span class="line"> $user-&gt;password &#x3D; \Illuminate\Support\Facades\Hash::make(&#39;password&#39;);</span><br><span class="line"> $user-&gt;save();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>  Bạn chỉ cần lên trình duyệt và vào đường dẫn <a href="http://localhost:8000/register" target="_blank" rel="noopener">http://localhost:8000/register</a>, sau đó vào bảng users trong database thì bạn sẽ thấy một bản ghi đã được thêm mới.</p>
+<p><strong>Test OAuth server</strong></p>
+</li>
+</ul>
+<p>Để test OAuth server chúng ta cần REST client để truyền vào request với phương thức POST, mình giới thiệu các bạn một plugin của Chrome là PostMan.</p>
+<p>Link cài đặt PostMan: <a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop" target="_blank" rel="noopener">https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop</a></p>
+<p>Nhập dữ liệu như bên dưới<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">username&#x3D;test@test.com</span><br><span class="line">password &#x3D; password</span><br><span class="line">grant_type&#x3D;password</span><br><span class="line">client_id &#x3D; GXvOWazQ3lA6YSaFji</span><br><span class="line">client_secret &#x3D;GXvOWazQ3lA.6&#x2F;YSaFji</span><br></pre></td></tr></table></figure></p>
+<p>  <img src="https://viblo.asia/uploads/e502f126-1a25-4598-a163-f352d2acb054.png" alt=""><br><strong>Bảo mật API endpoints</strong></p>
+<p>Để bảo vệ tài nguyên thì bạn cần sử dụng ‘before’ =&gt; ‘oauth’ trong route như sau:<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Route::get(&#39;api&#39;, [&#39;before&#39; &#x3D;&gt; &#39;oauth&#39;, function() &#123;</span><br><span class="line"> &#x2F;&#x2F; return the protected resource</span><br><span class="line"> &#x2F;&#x2F;echo &quot;success authentication&quot;;</span><br><span class="line"> $user_id&#x3D;Authorizer::getResourceOwnerId(); &#x2F;&#x2F; the token user_id</span><br><span class="line"> $user&#x3D;\App\User::find($user_id);&#x2F;&#x2F; get the user data from database</span><br><span class="line">return Response::json($user);</span><br><span class="line">&#125;]);</span><br></pre></td></tr></table></figure><br>Chúng ta tiếp tục sử dụng PostMan để test</p>
+<p><img src="https://viblo.asia/uploads/99bcff40-aaa6-459f-8453-275082b5e700.png" alt=""></p>
+<h3 id="3-Su-dung-token-trong-Controller"><a href="#3-Su-dung-token-trong-Controller" class="headerlink" title="3. Sử dụng token trong Controller"></a>3. Sử dụng token trong Controller</h3><p>Giả sử chúng ta có một PostController và user cần gửi một token để lấy tất cả các bài post của anh ta.Khi đó ta thực hiện theo các bước sau:</p>
+<ul>
+<li><p>Tạo một route và protect nó với oauth, trong app/Http/routes.php thêm dòng code sau vào</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Route::group([&#39;prefix&#39;&#x3D;&gt;&#39;api&#39;,&#39;before&#39; &#x3D;&gt; &#39;oauth&#39;], function()</span><br><span class="line">&#123;</span><br><span class="line">    Route::get(&#39;&#x2F;posts&#39;,  &#39;PostController@index&#39;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Mình đã tạo một route group với prefix là api và protect tất cả các route bên trong nó với oauth.</p>
+<p><strong>Chú ý</strong>: Để truy cập đươc token thì route phải được protect với oauth</p>
+</li>
+<li><p>Lấy token owner và triệu gọi thông tin user, trong PostController ta thêm đoạn code sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">use LucaDegasperi\OAuth2Server\Authorizer;</span><br><span class="line">public function index(Authorizer $authorizer)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     $user_id&#x3D;$authorizer-&gt;getResourceOwnerId(); &#x2F;&#x2F; the token user_id</span><br><span class="line">     $user&#x3D;\App\User::find($user_id);&#x2F;&#x2F; get the user data from database</span><br><span class="line">     $posts&#x3D; \App\Post::where(&#39;user_id&#39;, &#39;&#x3D;&#39;, $user-&gt;id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Chúng ta phải inject Authorizer $authorizer vào phương thức index để triệu gọi token mà user đã gửi trong request.</p>
+</li>
+</ul>
+<p>Như vậy là mình đã hướng dẫn xong cách cài đặt và sử dụng OAuth 2.0 server trong Laravel.Hi vọng bài viết này sẽ giúp ích cho các bạn.</p>
+<p><strong>[Link tham khảo]</strong></p>
+<p><a href="https://medium.com/@mshanak/laravel-5-token-based-authentication-ae258c12cfea#.6yqw7lguc" target="_blank" rel="noopener">https://medium.com/@mshanak/laravel-5-token-based-authentication-ae258c12cfea#.6yqw7lguc</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/11/17/scaling-with-slave-master-confiuration/" title="Scaling website with Master Slave configuration"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/10/20/use-global-event-bus-in-vuejs/" title="Sử dụng global event bus trong Vue.js"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

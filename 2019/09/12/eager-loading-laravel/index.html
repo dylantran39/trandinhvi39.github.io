@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Eager loading get n related models per parent in Laravel | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Đặt vấn đềYêu cầu đặt ra khá đơn giản là mình có 1 bảng Post và 1 bảng Comment, 1 post có nhiều comments, bây giờ mình muốn lấy tất cả các bài post và mỗi bài post mình muốn lấy 1 comment mới nhất sử">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eager loading get n related models per parent in Laravel">
+<meta property="og:url" content="http://yoursite.com/2019/09/12/eager-loading-laravel/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Đặt vấn đềYêu cầu đặt ra khá đơn giản là mình có 1 bảng Post và 1 bảng Comment, 1 post có nhiều comments, bây giờ mình muốn lấy tất cả các bài post và mỗi bài post mình muốn lấy 1 comment mới nhất sử">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-09-12T03:13:36.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:55:23.986Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Eager Loading">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2019/09/12/eager-loading-laravel/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-eager-loading-laravel" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Eager loading get n related models per parent in Laravel
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/09/12/eager-loading-laravel/" class="article-date">
+	  <time datetime="2019-09-12T03:13:36.000Z" itemprop="datePublished">12-09-2019</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a>, <a class="article-tag-link" href="/tags/Laravel/" rel="tag">Laravel</a>, <a class="article-tag-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="Dat-van-de"><a href="#Dat-van-de" class="headerlink" title="Đặt vấn đề"></a>Đặt vấn đề</h3><p>Yêu cầu đặt ra khá đơn giản là mình có 1 bảng Post và 1 bảng Comment, 1 post có nhiều comments, bây giờ mình muốn lấy tất cả các bài post và mỗi bài post mình muốn lấy 1 comment mới nhất sử dụng Eager loading.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Post::with([</span><br><span class="line">    &#39;comments&#39; &#x3D;&gt; function ($query) &#123;</span><br><span class="line">          $query-&gt;orderByDesc(&#39;created_at&#39;)-&gt;take(1);</span><br><span class="line">    &#125;,</span><br><span class="line">])</span><br><span class="line">-&gt;get();</span><br></pre></td></tr></table></figure>
+<p>Nó query như này</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select * from &#96;posts&#96; limit 1</span><br><span class="line">select * from &#96;posts&#96;</span><br><span class="line">select * from &#96;comments&#96; where &#96;comments&#96;.&#96;post_id&#96; in (&#39;1&#39;, &#39;2&#39;, &#39;3&#39;) order by &#96;created_at&#96; desc limit 1</span><br></pre></td></tr></table></figure>
+<p>Nhìn query trên thì chắc chắn bạn đã đoán ra kết quả như thế nào rồi đấy, nó chỉ lấy duy nhất 1 comment của một trong 3 bài post có id 1,2,3 mà có created_at mới nhất mà thôi, cách này không giải quyết được vấn đề rồi.</p>
+<h3 id="Giai-phap"><a href="#Giai-phap" class="headerlink" title="Giải pháp"></a>Giải pháp</h3><p>Cách đơn giản nhất để giải quyết vấn đề trên là mình sẽ tạo thêm một relation hasOne trong model Post để lấy ra comment mới nhất của bài post đó như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public function latestComment()</span><br><span class="line">&#123;</span><br><span class="line">    return $this-&gt;hasOne(Comment::class)-&gt;latest();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Mình chỉnh lại đoạn trên như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Post::with(&#39;latestComment&#39;)-&gt;get();</span><br></pre></td></tr></table></figure>
+<p>Bây giờ thì ta sẽ lấy được những comments mới nhất của các bài post.<br>Tuy nhiên nếu muốn lấy 2 hoặc 3 comments mới nhất của từng bài post thì phải làm thế nào, lúc này chắc chắn không thể sử dụng quan hệ hasOne  ở trên rồi.<br>Mình tạo class AbstractEloquent với scope scopeNPerItem như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">namespace App\Eloquent;</span><br><span class="line"></span><br><span class="line">use Illuminate\Database\Eloquent\Model;</span><br><span class="line">use DB;</span><br><span class="line"></span><br><span class="line">abstract class AbstractEloquent extends Model</span><br><span class="line">&#123;</span><br><span class="line">    public function scopeNPerItem($query, $group, $n &#x3D; 5)</span><br><span class="line">    &#123;</span><br><span class="line">        $table &#x3D; ($this-&gt;getTable());</span><br><span class="line"></span><br><span class="line">        $query-&gt;from(DB::raw(&quot;(SELECT @rank:&#x3D;0, @group:&#x3D;0) as vars, &#123;$table&#125;&quot;));</span><br><span class="line"></span><br><span class="line">        if ( ! $query-&gt;getQuery()-&gt;columns)</span><br><span class="line">        &#123;</span><br><span class="line">        	$query-&gt;select(&quot;&#123;$table&#125;.*&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $groupAlias &#x3D; &#39;group_&#39; . md5(time());</span><br><span class="line">        $rankAlias  &#x3D; &#39;rank_&#39; . md5(time());</span><br><span class="line"></span><br><span class="line">        $query-&gt;addSelect(DB::raw(</span><br><span class="line">        	&quot;@rank :&#x3D; IF(@group &#x3D; &#123;$group&#125;, @rank+1, 1) as &#123;$rankAlias&#125;, @group :&#x3D; &#123;$group&#125; as &#123;$groupAlias&#125;&quot;</span><br><span class="line">        ));</span><br><span class="line"></span><br><span class="line">        $query-&gt;getQuery()-&gt;orders &#x3D; (array) $query-&gt;getQuery()-&gt;orders;</span><br><span class="line">        array_unshift($query-&gt;getQuery()-&gt;orders, [</span><br><span class="line">            &#39;column&#39; &#x3D;&gt; $group,</span><br><span class="line">            &#39;direction&#39; &#x3D;&gt; &#39;asc&#39;,</span><br><span class="line">        ]);</span><br><span class="line">        $subQuery &#x3D; $query-&gt;toSql();</span><br><span class="line"></span><br><span class="line">        $newBase &#x3D; $this-&gt;newQuery()</span><br><span class="line">        	-&gt;from(DB::raw(&quot;(&#123;$subQuery&#125;) as &#123;$table&#125;&quot;))</span><br><span class="line">        	-&gt;mergeBindings($query-&gt;getQuery())</span><br><span class="line">        	-&gt;where($rankAlias, &#39;&lt;&#x3D;&#39;, $n)</span><br><span class="line">        	-&gt;getQuery();</span><br><span class="line"></span><br><span class="line">        $query-&gt;setQuery($newBase);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bây giờ model Post mình sẽ extends AbstractEloquent thay vì Model.<br>Mình thêm một function trong model Post để lấy ra 2 comments mới nhất như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public function takeComments()</span><br><span class="line">&#123;</span><br><span class="line">    return $this-&gt;comments()-&gt;nPerItem(&#39;post_id&#39;, 2)-&gt;latest();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bây giờ muốn lấy 2 comments mới nhất cho mỗi bài post sử dụng eager loading sẽ như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Post::with(&#39;takeComments&#39;)-&gt;get();</span><br></pre></td></tr></table></figure>
+<h3 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận"></a>Kết luận</h3><p>Hi vọng bài viết sẽ giúp ích gì đó cho bạn. Cảm ơn.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/09/13/query-solution/" title="Giải quyết vấn đề sử dụng paginate kết hợp mệnh đề having trong Laravel"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/08/12/sql-join-with-one-two-many-relationship/" title="SQL join - Select the last records in a one-to-many relationship"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

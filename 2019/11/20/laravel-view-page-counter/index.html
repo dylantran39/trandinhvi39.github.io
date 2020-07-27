@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Laravel Page View Counter | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Ngày xưa làm project training về website order thức ăn mình làm chức năng đếm số lượt xem sản phẩm như sau: Thêm một column là count_views vào bảng products rồi xữ lý (trong controller) tăng count_vie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Laravel Page View Counter">
+<meta property="og:url" content="http://yoursite.com/2019/11/20/laravel-view-page-counter/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Ngày xưa làm project training về website order thức ăn mình làm chức năng đếm số lượt xem sản phẩm như sau: Thêm một column là count_views vào bảng products rồi xữ lý (trong controller) tăng count_vie">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-11-20T04:44:16.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:55:05.370Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2019/11/20/laravel-view-page-counter/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-laravel-view-page-counter" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Laravel Page View Counter
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/11/20/laravel-view-page-counter/" class="article-date">
+	  <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Laravel/" rel="tag">Laravel</a>, <a class="article-tag-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Ngày xưa làm project training về website order thức ăn mình làm chức năng đếm số lượt xem sản phẩm như sau: Thêm một column là count_views vào bảng products rồi xữ lý (trong controller) tăng count_views lên 1 và update vào database mỗi lần người dùng click vào trang chi tiết sản phẩm. Đúng là khi xưa ta bé ta ngu, cách làm này rất không đúng và risk của nó thì chắc các bạn đã biết rồi, mình không nói thêm nữa. Hôm nay mình viết bài này để chia sẽ các bạn cách làm chức năng đếm số lượt xem trang một cách đúng đắn hơn, sử dụng Events và Middleware trong Laravel.<br>Nếu bạn nào muốn dùng package để làm chức năng này thì có thể sử dụng package <a href="https://github.com/Kryptonit3/Counter" target="_blank" rel="noopener">này</a>. Nếu bạn quyết định dùng package thì bạn có thể dừng đọc bài này ở đây được rồi :)</p>
+<p>OK, chúng ta cùng nhau bắt đầu nhé<br>Đầu tiên chúng ta sẽ tạo table posts sử dụng lệnh quen thuộc sau:</p>
+<p><code>php artisan make:migration create_posts_table --create=&quot;posts&quot;</code></p>
+<p>Tiếp đến là thêm một số fields vào table posts như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public function up()</span><br><span class="line">&#123;</span><br><span class="line">    Schema::create(&#39;posts&#39;, function (Blueprint $table)</span><br><span class="line">    &#123;</span><br><span class="line">        $table-&gt;increments(&#39;id&#39;);</span><br><span class="line">        $table-&gt;string(&#39;title&#39;);</span><br><span class="line">        $table-&gt;text(&#39;content&#39;);</span><br><span class="line">        $table-&gt;integer(&#39;view_count&#39;)-&gt;default(0);</span><br><span class="line">        $table-&gt;timestamps();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Tiếp theo, chạy lệnh sau để nó sinh table posts trong Database nhé</p>
+<p><code>php artisan migrate</code></p>
+<p>Chúng ta sẽ tạo tiếp Model Post, Controller PostsController và Route.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">namespace App\Demo;</span><br><span class="line"></span><br><span class="line">use Illuminate\Database\Eloquent\Model;</span><br><span class="line"></span><br><span class="line">class Post extends Model</span><br><span class="line">&#123;</span><br><span class="line">    protected $fillable &#x3D; [ &#39;title&#39;, &#39;content&#39; ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>php artisan make:controller PostsController</code></p>
+<p><code>Route::resource(&#39;posts&#39;, &#39;PostsController&#39;);</code></p>
+<p>Để tăng số lượt xem của post mình cần sử dụng Event trong Laravel, nó cho phép chúng ta kích hoạt các hành động ứng với các sự kiện tương ứng. Có thể bạn đã sử dụng nó khi làm việc với Eloquent rồi phải không nào, nó đặt biệt hữu dụng trong trường hợp bạn muốn validate Model khi các hành động created,updated… được thực hiện. Các bạn có thể tham khảo thêm tại <a href="https://laravel.com/docs/5.4/eloquent#events" target="_blank" rel="noopener">link</a> này nhé.<br>Vậy thì làm cách nào để chúng ta có thể apply nó vào chức năng đếm số lượt xem bài post của chúng ta.<br>Đầu tiên chúng ta sẽ tạo một Event mà nó sẽ được kích hoạt mỗi khi người dùng view bài post. Muốn tính lượt xem cho page nào thì ta chỉ cần hook Event này vào là xong.Với cách làm này chúng ta đang break xữ lý logic ra khỏi controller và viết nó trong một class chuyên biệt hơn, việc này làm cho code trở nên clear và dễ maintain hơn nhiều phải không nào.<br>Bây giờ thì controller sẽ đơn giản và ngắn gọn như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">use App\Demo\Post;</span><br><span class="line"></span><br><span class="line">public function show($id)</span><br><span class="line">&#123;</span><br><span class="line">    $post &#x3D; Post::find($id);</span><br><span class="line">    Event::fire(&#39;posts.view&#39;, $post);</span><br><span class="line"></span><br><span class="line">    return View::make(&#39;posts.show&#39;)-&gt;withPost($post);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Laravel cho phép chúng ta đăng ký một lớp đóng vai trò lắng nghe sự kiện và mặc định nó sẽ gọi phương thức handle của lớp này để xữ lý mỗi khi sự kiện được kích hoạt.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">namespace App\Demo\Events;</span><br><span class="line"></span><br><span class="line">use App\Demo\Post;</span><br><span class="line"></span><br><span class="line">class ViewPostHandler</span><br><span class="line">&#123;</span><br><span class="line">    public function handle(Post $post)</span><br><span class="line">    &#123;</span><br><span class="line">        $post-&gt;increment(&#39;view_count&#39;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Tiếp theo là bước đăng ký. Bạn có thể đăng ký trong phương thức boot của EventServiceProvider.<br><code>Event::listen(&#39;posts.view&#39;, &#39;App\Demo\Events\ViewPostHandler&#39;);</code></p>
+<p>Bây giờ mỗi lúc bài post được hiển thị thì sự kiện “post.view” được kích hoạt và nó sẽ tăng số lượt view trang lên 1.Nhưng điều gì sẽ xãy ra nếu người dùng vào xem một bài post và nhấn F5 liên tục. Số lượt view sẽ tăng liên tục, không ổn, chúng ta sẽ sử dụng Session và Middleware để giải quyết vấn đề này.<br>Các bạn sửa lại class ViewPostHandler như sau nhé</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">namespace App\Demo\Events;</span><br><span class="line"></span><br><span class="line">use App\Demo\Post;</span><br><span class="line">use Illuminate\Session\Store;</span><br><span class="line"></span><br><span class="line">class ViewPostHandler</span><br><span class="line">&#123;</span><br><span class="line">    private $session;</span><br><span class="line"></span><br><span class="line">    public function __construct(Store $session)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;session &#x3D; $session;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function handle(Post $post)</span><br><span class="line">	&#123;</span><br><span class="line">	    if (!$this-&gt;isPostViewed($post))</span><br><span class="line">	    &#123;</span><br><span class="line">	        $post-&gt;increment(&#39;view_count&#39;);</span><br><span class="line">	        $this-&gt;storePost($post);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private function isPostViewed($post)</span><br><span class="line">	&#123;</span><br><span class="line">	    $viewed &#x3D; $this-&gt;session-&gt;get(&#39;viewed_posts&#39;, []);</span><br><span class="line"></span><br><span class="line">	    return array_key_exists($post-&gt;id, $viewed);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private function storePost($post)</span><br><span class="line">	&#123;</span><br><span class="line">	    $key &#x3D; &#39;viewed_posts.&#39; . $post-&gt;id;</span><br><span class="line"></span><br><span class="line">	    $this-&gt;session-&gt;put($key, time());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Tiếp theo chúng ta sẽ xây dựng middleware Filter, với middleware này thì chúng ta chỉ cho phép tăng biến đếm view_count sau một khoảng thời gian nhất định (ở đây mình để 1 giờ)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">namespace App\Http\Middleware;</span><br><span class="line"></span><br><span class="line">use Closure;</span><br><span class="line">use Illuminate\Session\Store;</span><br><span class="line">use Session;</span><br><span class="line"></span><br><span class="line">class Filter</span><br><span class="line">&#123;</span><br><span class="line">    private $session;</span><br><span class="line"></span><br><span class="line">    public function __construct(Store $session)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;session &#x3D; $session;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Handle an incoming request.</span><br><span class="line">     *</span><br><span class="line">     * @param  \Illuminate\Http\Request  $request</span><br><span class="line">     * @param  \Closure  $next</span><br><span class="line">     * @return mixed</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public function handle($request, Closure $next)</span><br><span class="line">    &#123;</span><br><span class="line">        $posts &#x3D; $this-&gt;getViewedPosts();</span><br><span class="line"></span><br><span class="line">        if (!is_null($posts))</span><br><span class="line">        &#123;</span><br><span class="line">            $posts &#x3D; $this-&gt;cleanExpiredViews($posts);</span><br><span class="line">            $this-&gt;storePosts($posts);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return $next($request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private function getViewedPosts()</span><br><span class="line">    &#123;</span><br><span class="line">        return $this-&gt;session-&gt;get(&#39;viewed_posts&#39;, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private function cleanExpiredViews($posts)</span><br><span class="line">    &#123;</span><br><span class="line">        $time &#x3D; time();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Let the views expire after one hour.</span><br><span class="line">        $throttleTime &#x3D; 3600;</span><br><span class="line"></span><br><span class="line">        return array_filter($posts, function ($timestamp) use ($time, $throttleTime)</span><br><span class="line">        &#123;</span><br><span class="line">            return ($timestamp + $throttleTime) &gt; $time;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private function storePosts($posts)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;session-&gt;put(&#39;viewed_posts&#39;, $posts);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bước cuối cùng là đăng ký middleware này trong Kernel và thêm middleware vào cho route<br><code>&#39;filter&#39; =&gt; \App\Http\Middleware\Filter::class,</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Route::group([&#39;middleware&#39; &#x3D;&gt; &#39;filter&#39;], function() &#123;</span><br><span class="line">    Route::resource(&#39;posts&#39;, &#39;PostsController&#39;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>Như vậy là mình đã hoàn thành xong chức năng đếm số lượt xem trang rồi, khá đơn giản phải không nào, cảm ơn các bạn đã đọc.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/01/05/send-push-notification-sns-aws/" title="Send push notifications using Laravel and AWS SNS"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/11/18/procedure-laravel/" title="Creating MySQL Procedure in Laravel 5.4 Migrations"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

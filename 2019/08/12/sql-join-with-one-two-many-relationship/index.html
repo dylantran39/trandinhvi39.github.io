@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>SQL join - Select the last records in a one-to-many relationship | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Chào các bạn, ở bài viết hôm nay mình sẽ cùng các bạn đi giải quyết một bài toán khá đơn giản bằng các cách khác nhau sử dụng kiến thức truy vấn cơ sở dữ liệu với hệ quản trị cơ sở dữ liệu MySQL. Đặt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL join - Select the last records in a one-to-many relationship">
+<meta property="og:url" content="http://yoursite.com/2019/08/12/sql-join-with-one-two-many-relationship/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Chào các bạn, ở bài viết hôm nay mình sẽ cùng các bạn đi giải quyết một bài toán khá đơn giản bằng các cách khác nhau sử dụng kiến thức truy vấn cơ sở dữ liệu với hệ quản trị cơ sở dữ liệu MySQL. Đặt">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-12T11:12:16.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:51:56.383Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2019/08/12/sql-join-with-one-two-many-relationship/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-sql-join-with-one-two-many-relationship" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL join - Select the last records in a one-to-many relationship
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/08/12/sql-join-with-one-two-many-relationship/" class="article-date">
+	  <time datetime="2019-08-12T11:12:16.000Z" itemprop="datePublished">12-08-2019</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/SQL/" rel="tag">SQL</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Chào các bạn, ở bài viết hôm nay mình sẽ cùng các bạn đi giải quyết một bài toán khá đơn giản bằng các cách khác nhau sử dụng kiến thức truy vấn cơ sở dữ liệu với hệ quản trị cơ sở dữ liệu MySQL.</p>
+<h1 id="Dat-van-de"><a href="#Dat-van-de" class="headerlink" title="Đặt vấn đề"></a>Đặt vấn đề</h1><p>Mình có table customers chứa thông tin khách hàng bao gồm 3 trường custID, custFirst và custLast,  table sales chứa thông tin về lịch sử bán hàng gồm các trường saleID, dateSale, saleAmount và custID. Quan hệ giữa customers và sales là 1 - n.<br>Bài toán đặt ra là giờ mình muốn lấy danh sách các customers và lịch sử bán hàng gần nhất cho customer đó.<br>Các bạn có thể chạy lệnh sql bên dưới để tạo cấu trúc các table và sample data.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE &#96;customers&#96; (</span><br><span class="line">  &#96;custID&#96; int(10) NOT NULL auto_increment,</span><br><span class="line">  &#96;custFirst&#96; varchar(50) default NULL,</span><br><span class="line">  &#96;custLast&#96; varchar(50) default NULL,</span><br><span class="line">  PRIMARY KEY  (&#96;custID&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB AUTO_INCREMENT&#x3D;4 DEFAULT CHARSET&#x3D;utf8;</span><br><span class="line"></span><br><span class="line">insert  into &#96;customers&#96;(&#96;custID&#96;,&#96;custFirst&#96;,&#96;custLast&#96;) values (1,&#39;John&#39;,&#39;Smith&#39;),(2,&#39;Sally&#39;,&#39;Fields&#39;),(3,&#39;Winston&#39;,&#39;Churchill&#39;);</span><br><span class="line"></span><br><span class="line">CREATE TABLE &#96;sales&#96; (</span><br><span class="line">  &#96;saleID&#96; int(10) NOT NULL auto_increment,</span><br><span class="line">  &#96;saleDate&#96; datetime default NULL,</span><br><span class="line">  &#96;saleAmount&#96; double default NULL,</span><br><span class="line">  &#96;custID&#96; int(10) default &#39;0&#39;,</span><br><span class="line">  PRIMARY KEY  (&#96;saleID&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB AUTO_INCREMENT&#x3D;7 DEFAULT CHARSET&#x3D;utf8;</span><br><span class="line"></span><br><span class="line">insert  into &#96;sales&#96;(&#96;saleID&#96;,&#96;saleDate&#96;,&#96;saleAmount&#96;,&#96;custID&#96;) values (1,&#39;2008-10-20 09:12:00&#39;,20,1),(2,&#39;2007-12-03 18:45:00&#39;,14,1),(3,&#39;2008-02-13 16:00:00&#39;,10,3),(4,&#39;2007-03-14 16:00:00&#39;,30,3),(5,&#39;2007-05-14 14:48:00&#39;,18,3),(6,&#39;2008-10-22 19:00:00&#39;,57,1);</span><br></pre></td></tr></table></figure>
+<p>Sample data table customers.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+--------+-----------+-----------+</span><br><span class="line">| custID | custFirst | custLast  |</span><br><span class="line">+--------+-----------+-----------+</span><br><span class="line">|      1 | John      | Smith     |</span><br><span class="line">|      2 | Sally     | Fields    |</span><br><span class="line">|      3 | Winston   | Churchill |</span><br><span class="line">+--------+-----------+-----------+</span><br><span class="line">3 rows in set (0,00 sec)</span><br></pre></td></tr></table></figure>
+<p>Sample data table sales.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">| saleID | saleDate            | saleAmount | custID |</span><br><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">|      1 | 2008-10-20 09:12:00 |         20 |      1 |</span><br><span class="line">|      2 | 2007-12-03 18:45:00 |         14 |      1 |</span><br><span class="line">|      3 | 2008-02-13 16:00:00 |         10 |      3 |</span><br><span class="line">|      4 | 2007-03-14 16:00:00 |         30 |      3 |</span><br><span class="line">|      5 | 2007-05-14 14:48:00 |         18 |      3 |</span><br><span class="line">|      6 | 2008-10-22 19:00:00 |         57 |      1 |</span><br><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">6 rows in set (0,00 sec)</span><br></pre></td></tr></table></figure>
+<h1 id="Giai-phap"><a href="#Giai-phap" class="headerlink" title="Giải pháp"></a>Giải pháp</h1><p>Đầu tiên mình sẽ tạo ra bảng tạm, mục đích của bảng này là lấy ra những record sales gần nhất ứng với mỗi custID trong bảng sales.<br>Mình sử dụng câu lệnh sql sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT s1.*</span><br><span class="line">		FROM sales as s1</span><br><span class="line">		LEFT JOIN sales AS s2</span><br><span class="line">		     ON s1.custID &#x3D; s2.custID AND s1.saledate &lt; s2.saledate</span><br><span class="line">		WHERE s2.custID IS NULL</span><br></pre></td></tr></table></figure>
+<p>Kết quả sẽ như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">| saleID | saleDate            | saleAmount | custID |</span><br><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">|      3 | 2008-02-13 16:00:00 |         10 |      3 |</span><br><span class="line">|      6 | 2008-10-22 19:00:00 |         57 |      1 |</span><br><span class="line">+--------+---------------------+------------+--------+</span><br><span class="line">2 rows in set (0,00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>Bây giờ mình sẽ join với bảng customers thông qua custID là xong.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SELECT</span><br><span class="line">    customers.*, sale_tmp.*</span><br><span class="line">FROM</span><br><span class="line">    customers</span><br><span class="line"></span><br><span class="line">    LEFT JOIN ( SELECT s1.*</span><br><span class="line">		FROM sales as s1</span><br><span class="line">		LEFT JOIN sales AS s2</span><br><span class="line">		     ON s1.custID &#x3D; s2.custID AND s1.saledate &lt; s2.saledate</span><br><span class="line">		WHERE s2.custID IS NULL ) as sale_tmp</span><br><span class="line"></span><br><span class="line">    ON (customers.custID &#x3D; sale_tmp.custID)</span><br></pre></td></tr></table></figure>
+<p>Kết quả:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+--------+-----------+-----------+--------+---------------------+------------+--------+</span><br><span class="line">| custID | custFirst | custLast  | saleID | saleDate            | saleAmount | custID |</span><br><span class="line">+--------+-----------+-----------+--------+---------------------+------------+--------+</span><br><span class="line">|      3 | Winston   | Churchill |      3 | 2008-02-13 16:00:00 |         10 |      3 |</span><br><span class="line">|      1 | John      | Smith     |      6 | 2008-10-22 19:00:00 |         57 |      1 |</span><br><span class="line">|      2 | Sally     | Fields    |   NULL | NULL                |       NULL |   NULL |</span><br><span class="line">+--------+-----------+-----------+--------+---------------------+------------+--------+</span><br><span class="line">3 rows in set (0,00 sec)</span><br></pre></td></tr></table></figure>
+<p>Như kết quả trả về trên thì hai khách hàng John và Winston có lịch sử mua hàng gần nhất còn khách hàng Sally thì chưa mua lần nào.</p>
+<p>Có một cách khác để giải quyết bài toán này. Mình viết lại câu truy vấn như sau:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT c.*, s1.*</span><br><span class="line">FROM customers c</span><br><span class="line">LEFT JOIN sales s1 ON (c.custID &#x3D; s1.custID)</span><br><span class="line">LEFT OUTER JOIN sales s2 ON (c.custID &#x3D; s2.custID AND</span><br><span class="line">    (s1.saleDate &lt; s2.saleDate OR s1.saleDate &#x3D; s2.saleDate AND s1.saleID &lt; s2.saleID))</span><br><span class="line">WHERE s2.saleID IS NULL;</span><br></pre></td></tr></table></figure>
+<p>Kết quả cũng tương tự như cách trên.<br>Tuy nhiên, sẽ có lúc gặp trường hợp một customer có nhiều hơn một bản ghi sales gần nhất. Để giải quyết vấn đề này các bạn có thể dùng limit.</p>
+<h1 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận"></a>Kết luận</h1><p>Hi vọng bài viết sẽ hữu ích cho các bạn, cảm ơn đã đọc (bow).</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/09/12/eager-loading-laravel/" title="Eager loading get n related models per parent in Laravel"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/07/17/some-tips-with-git/" title="Một số lệnh giúp làm việc hiệu quả hơn với Git"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

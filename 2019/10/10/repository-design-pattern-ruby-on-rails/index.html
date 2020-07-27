@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Repository Pattern in Rails | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Gần đây mình có tìm hiểu về Ruby on Rails, trước đó mình code PHP trên framework Laravel. Những ai làm Laravel thì chắc quen với Repository Pattern. Repository là một phong cách thiết kế code thực hiệ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Repository Pattern in Rails">
+<meta property="og:url" content="http://yoursite.com/2019/10/10/repository-design-pattern-ruby-on-rails/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Gần đây mình có tìm hiểu về Ruby on Rails, trước đó mình code PHP trên framework Laravel. Những ai làm Laravel thì chắc quen với Repository Pattern. Repository là một phong cách thiết kế code thực hiệ">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-10-10T12:16:26.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:53:41.516Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Design Pattern">
+<meta property="article:tag" content="Repository">
+<meta property="article:tag" content="Ruby on Rails">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2019/10/10/repository-design-pattern-ruby-on-rails/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-repository-design-pattern-ruby-on-rails" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Repository Pattern in Rails
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/10/10/repository-design-pattern-ruby-on-rails/" class="article-date">
+	  <time datetime="2019-10-10T12:16:26.000Z" itemprop="datePublished">10-10-2019</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a>, <a class="article-tag-link" href="/tags/Repository/" rel="tag">Repository</a>, <a class="article-tag-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Gần đây mình có tìm hiểu về Ruby on Rails, trước đó mình code PHP trên framework Laravel. Những ai làm Laravel thì chắc quen với Repository Pattern. Repository là một phong cách thiết kế code thực hiện việc tách biệt giữa data access logic và business logic,  nó được thực hiện bằng cách thêm vào một tầng nằm giữa Business Logic và Data Source, gọi là các Repository -  nơi lưu trữ tất cả code liên quan đến việc truy cập dữ liệu.<br>Khi nhảy vào học Rails, mình cũng tìm hiểu ngay về vấn đề này. Bài viết hôm nay mình sẽ demo nho nhỏ về Repository trong Rails.<br>Bây giờ chúng ta hãy cùng xem một action create quen thuộc dưới đây nhé</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def create</span><br><span class="line">    @user &#x3D; User.new(user_params)</span><br><span class="line">    if @user.save</span><br><span class="line">      redirect_to user_path(@user), notice: &#39;User has been created&#39;</span><br><span class="line">    else</span><br><span class="line">      render :new</span><br><span class="line">    end</span><br><span class="line">  end</span><br></pre></td></tr></table></figure>
+<p>Rất là quen thuộc phải không các bạn. Còn có thêm protecting attributes user_params nữa nhưng mình không cho vào, chắc các bạn cũng biết rồi. Mà mình thấy lúc trước có thể dùng attr_accessible mà không rõ lý do gì mà nó lại bị khai tử và bắt mình phải viết thêm method user_params nựa, hay họ sợ developer nhầm lẫn giữa attr_accessible và attr_accessor chăng, thôi kệ đi.<br>Bây giờ chúng ta sẽ tiến hành tách ra bằng việc sử dụng Repository pattern để trừu tượng hóa cách tương tác với cơ sở dữ liệu.<br>Các bạn hãy tạo lớp UserRepository trong thư mục <em>app/repositories</em> chịu trách nhiệm tương tác với cơ sở dữ liệu nhé.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class UserRepository</span><br><span class="line">  def all</span><br><span class="line">    User.all</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def find(id)</span><br><span class="line">    User.find(id)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def new_entity(attrs &#x3D; nil)</span><br><span class="line">    User.new(attrs)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def save(user)</span><br><span class="line">    user.save</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def delete(user)</span><br><span class="line">    user.destroy</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>Bây giờ thì bạn có thể sử dụng trong controller rồi</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">class UsersController &lt; ApplicationController</span><br><span class="line">  before_action :set_user, only: [:edit, :show]</span><br><span class="line"></span><br><span class="line">  def show</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def create</span><br><span class="line">    @user &#x3D; repo.new_entity(user_params)</span><br><span class="line"></span><br><span class="line">    if repo.save(@user)</span><br><span class="line">      redirect_to user_path(@user), notice: &#39;User has been created&#39;</span><br><span class="line">    else</span><br><span class="line">      render :new</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def edit</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  private</span><br><span class="line"></span><br><span class="line">  def set_user</span><br><span class="line">    @user &#x3D; repo.find(params[:id])</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def user_params</span><br><span class="line">    params.require(:user).permit(:first_name, :last_name, :password)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  def repo</span><br><span class="line">    @repo ||&#x3D; UserRepository.new</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>Việc sử dụng Repository đem lại một số lợi ích sau:</p>
+<ul>
+<li>Chúng ta không phải tương tác trực tiếp mới model trong controller nữa.</li>
+<li>Cấu trúc code dễ nhìn và dễ hiểu</li>
+<li>Code dễ đọc hơn, chúng ta chỉ cần focus vào data access logic nên khi có thay đổi gì thì cũng sẽ dễ dàng hơn trong việc maintain code.</li>
+</ul>
+<p>Để triễn khai đúng Repository Pattern thì bạn cần phải tạo ra BaseRepository và định nghĩa các method thường được sử dụng trong lớp này, ứng với mỗi model thì ta sẽ tạo ModelNameRepository kế thừa từ BaseRepository. ModelNameRepository chỉ cần định nghĩa thêm những phương thức của riêng nó, còn các phương thức cơ bản như find, all.. đã có trong Base rồi. Việc làm này nhằm tăng tính tái sử dụng và giảm thiểu trùng lặp code.</p>
+<p>Trên đây là những chia sẽ của mình về cách sử dụng Repository trong Rails, hi vọng nó sẽ hữu ích cho các bạn.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/10/20/use-global-event-bus-in-vuejs/" title="Sử dụng global event bus trong Vue.js"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/09/13/query-solution/" title="Giải quyết vấn đề sử dụng paginate kết hợp mệnh đề having trong Laravel"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

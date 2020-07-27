@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="Đặt vấn đềNhư các bạn đã biết, các thiết bị được sử dụng để truy cập internet với kích thước màn hình, độ phân giải khác nhau, vì vậy khi xây dựng ứng dụng có liên quan đến hình ảnh, developers chúng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway">
+<meta property="og:url" content="http://yoursite.com/2020/02/11/reside-image-with-aws/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Đặt vấn đềNhư các bạn đã biết, các thiết bị được sử dụng để truy cập internet với kích thước màn hình, độ phân giải khác nhau, vì vậy khi xây dựng ứng dụng có liên quan đến hình ảnh, developers chúng">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-11T09:16:40.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:53:24.552Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="Lambda">
+<meta property="article:tag" content="API Gateway">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2020/02/11/reside-image-with-aws/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-reside-image-with-aws" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/02/11/reside-image-with-aws/" class="article-date">
+	  <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a>, <a class="article-tag-link" href="/tags/AWS/" rel="tag">AWS</a>, <a class="article-tag-link" href="/tags/Lambda/" rel="tag">Lambda</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Dat-van-de"><a href="#Dat-van-de" class="headerlink" title="Đặt vấn đề"></a>Đặt vấn đề</h1><p>Như các bạn đã biết, các thiết bị được sử dụng để truy cập internet với kích thước màn hình, độ phân giải khác nhau, vì vậy khi xây dựng ứng dụng có liên quan đến hình ảnh, developers chúng ta phải cung cấp hình ảnh với nhiều kích cỡ khác nhau nhằm tối ưu và đem đến trải nghiệm người dùng tốt hơn.<br>Nếu hình ảnh được lưu trữ ngay trên server của chúng ta thì developers có thể sử dụng một số thư viện xữ lý, resize hình ảnh với kích thước phù hợp trước khi trả về.<br>Nếu code PHP thì bạn có thể sử dụng package <a href="https://github.com/thephpleague/glide" target="_blank" rel="noopener">này</a><br>Tuy nhiên, hiện nay thì hầu hết ứng dụng đều lưu trữ hình ảnh trên Amazon S3 nhằm giảm tải cho server. Và nếu như thế thì cách tiếp cận tốt nhất là sử dụng  AWS Lambda để trigger event resize hình ảnh khi có một object mới được tạo trong Bucket của S3.</p>
+<h1 id="Flow-xu-ly"><a href="#Flow-xu-ly" class="headerlink" title="Flow xữ lý"></a>Flow xữ lý</h1><ol>
+<li>Người dùng request một kích thước nào đó với một hình ảnh trong Bucket của S3 thông qua static website hosting endpoint. Ví dụ mình có 1 tấm hình trên Bucket là vitd.jpg, mình muốn lấy về hình ảnh với kích thước 300x300 thì request sẽ là <a href="http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/300×300/vitd.jpg" target="_blank" rel="noopener">http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/300×300/vitd.jpg</a></li>
+<li>Nếu kích thước hình ảnh chưa tồn tại trên Bucket thì request sẽ được chuyển hướng đến resize API method, yêu cầu thay đổi kích thước thông qua API Gateway.</li>
+<li>Phương thức API Gateway được cấu hình để trigger một function Lambda.</li>
+<li>Nhiệm vụ của function Lambda là lấy tấm ảnh gốc trên S3 Bucket, resize nó theo kích thước mà người dùng yêu cầu và upload tấm ảnh đã resize vào Bucket. (Với request ở trên thì sau khi xữ lý function Lambda trên Bucket sẽ tạo ra folder 300x300 và chứa tấm hình đã resize về đúng kích thước trong thư mục đó).</li>
+<li>Khi function Lambda hoàn thành, API Gateway sẽ redirect request đến file đã được xữ lý và lưu trữ trên S3.</li>
+<li>Bây giờ thì người dùng đã có tấm hình với kích thước mong muốn, ở những request tiếp theo, nếu một người dùng khác yêu cầu cũng với kích thước như vậy với tấm hình vitd.jpg thì function Lambda không được gọi nữa mà nó sẽ lấy tấm hình đã được resize trước đó và trả về cho người dùng.</li>
+</ol>
+<h1 id="Cac-buoc-thuc-hien"><a href="#Cac-buoc-thuc-hien" class="headerlink" title="Các bước thực hiện"></a>Các bước thực hiện</h1><h3 id="Tao-va-cau-hinh-S3-Bucket"><a href="#Tao-va-cau-hinh-S3-Bucket" class="headerlink" title="Tạo và cấu hình S3 Bucket:"></a>Tạo và cấu hình S3 Bucket:</h3><ol>
+<li>Trên màn hình S3 console, <a href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html" target="_blank" rel="noopener">tạo mới một Bucket</a>.</li>
+<li>Chọn <strong>Permissions</strong>, <strong>Add Bucket Policy</strong> và thêm mới một Policy cho Bucket.</li>
+<li>Chọn Static <strong>Website Hosting</strong>, <strong>Enable website hosting</strong> và trong <strong>Index Document</strong> nhập vào index.html</li>
+<li>Lưu lại là xong.<h3 id="Tao-function-Lambda"><a href="#Tao-function-Lambda" class="headerlink" title="Tạo function Lambda"></a>Tạo function Lambda</h3></li>
+<li>Trên màn hình Lambda console chọn <strong>Create a Lambda function, Blank Function</strong>.</li>
+<li>Chọn tích hợp API Gateway.</li>
+<li>Để cho phép tất cả user triệu gọi API method, trên <strong>Security</strong> chọn <strong>Open</strong> sau đó <strong>Next</strong>.</li>
+<li><strong>Code entry type</strong> thì upload folder chứa code của bạn lên.<br>Code function Lambda (Viết bằng NodeJS).<br>Trong package.json thì thêm dependencies và devDependencies như sau:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;dependencies&quot;: &#123;</span><br><span class="line">    &quot;sharp&quot;: &quot;^0.17.3&quot;</span><br><span class="line">&#125;,</span><br><span class="line">  &quot;devDependencies&quot;: &#123;</span><br><span class="line">    &quot;aws-sdk&quot;: &quot;^2.36.0&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>aws-sdk</strong> được cung cấp để thao tác với AWS.<br>Code file index.js.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#39;use strict&#39;;</span><br><span class="line"></span><br><span class="line">const AWS &#x3D; require(&#39;aws-sdk&#39;);</span><br><span class="line">const S3 &#x3D; new AWS.S3(&#123;</span><br><span class="line">  signatureVersion: &#39;v4&#39;,</span><br><span class="line">&#125;);</span><br><span class="line">const Sharp &#x3D; require(&#39;sharp&#39;);</span><br><span class="line"></span><br><span class="line">const BUCKET &#x3D; process.env.BUCKET;</span><br><span class="line">const URL &#x3D; process.env.URL;</span><br><span class="line"></span><br><span class="line">exports.handler &#x3D; function(event, context, callback) &#123;</span><br><span class="line">  const key &#x3D; event.queryStringParameters.key;</span><br><span class="line">  const match &#x3D; key.match(&#x2F;(\d+)x(\d+)\&#x2F;(.*)&#x2F;);</span><br><span class="line">  const width &#x3D; parseInt(match[1], 10);</span><br><span class="line">  const height &#x3D; parseInt(match[2], 10);</span><br><span class="line">  const originalKey &#x3D; match[3];</span><br><span class="line"></span><br><span class="line">  S3.getObject(&#123;Bucket: BUCKET, Key: originalKey&#125;).promise()</span><br><span class="line">    .then(data &#x3D;&gt; Sharp(data.Body)</span><br><span class="line">      .resize(width, height)</span><br><span class="line">      .toFormat(&#39;png&#39;)</span><br><span class="line">      .toBuffer()</span><br><span class="line">    )</span><br><span class="line">    .then(buffer &#x3D;&gt; S3.putObject(&#123;</span><br><span class="line">        Body: buffer,</span><br><span class="line">        Bucket: BUCKET,</span><br><span class="line">        ContentType: &#39;image&#x2F;png&#39;,</span><br><span class="line">        Key: key,</span><br><span class="line">      &#125;).promise()</span><br><span class="line">    )</span><br><span class="line">    .then(() &#x3D;&gt; callback(null, &#123;</span><br><span class="line">        statusCode: &#39;301&#39;,</span><br><span class="line">        headers: &#123;&#39;location&#39;: &#96;$&#123;URL&#125;&#x2F;$&#123;key&#125;&#96;&#125;,</span><br><span class="line">        body: &#39;&#39;,</span><br><span class="line">      &#125;)</span><br><span class="line">    )</span><br><span class="line">    .catch(err &#x3D;&gt; callback(err))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Sau khi lấy được key bằng event.queryStringParameters.key thì sẽ tiến hành bóc tách dựa vào Regex để lấy ra width, height và tên hình ảnh gốc.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const match &#x3D; key.match(&#x2F;(\d+)x(\d+)\&#x2F;(.*)&#x2F;);</span><br><span class="line">const width &#x3D; parseInt(match[1], 10);</span><br><span class="line">const height &#x3D; parseInt(match[2], 10);</span><br><span class="line">const originalKey &#x3D; match[3];</span><br></pre></td></tr></table></figure>
+<p>Sau đó sử dụng Sharp để resize nó về kích thước đã bóc tách ở trên rồi dùng putObject để upload nó lên S3, cuối cùng là trả về đường dẫn sau khi đã upload thành công.</p>
+<p>Đọc qua đoạn code chắc các bạn sẽ thấy có một chổ chưa ổn lắm là nếu người dùng chọn size ảnh nào thì function Lambda cũng được trigger nếu size đó chưa tồn taị trên Bucket, để giải quyết vấn đề này thì bạn nên chỉnh lại đoạn code với việc cấu hình chỉ cho phép resize hình về những size nhất định mà bên mình quy định mà thôi. Ví dụ chỉ cho resize về các kích thước 300x300, 600x600, 800x800 còn nếu truyền lên các kích thước khác thì mình sẽ trả về hình ảnh gốc.<br>5. Để cấu hình cho function của bạn, trên Environment variables bạn thêm 2 cặp key-value sau:<br>Key: <strong>BUCKET</strong>, value: tên Bucket mà bạn đã tạo ở trên.<br>Key: <strong>URL</strong>, value: endpoint ở trên.<br>6. Định nghĩa execution role permissions cho function, trên <strong>Role</strong> chọn <strong>Create a custom role</strong>, <strong>View Policy Document</strong>, <strong>Edit</strong>, <strong>OK</strong>.<br>7. Thay thế tên Bucket <strong>YOUR_BUCKET_NAME_HERE</strong> bằng tên Bucket mà bạn đã tạo ở trên, copy đoạn code sau và bỏ vào <strong>policy document</strong>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;Version&quot;: &quot;2012-10-17&quot;,</span><br><span class="line">  &quot;Statement&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;Effect&quot;: &quot;Allow&quot;,</span><br><span class="line">      &quot;Action&quot;: [</span><br><span class="line">        &quot;logs:CreateLogGroup&quot;,</span><br><span class="line">        &quot;logs:CreateLogStream&quot;,</span><br><span class="line">        &quot;logs:PutLogEvents&quot;</span><br><span class="line">      ],</span><br><span class="line">      &quot;Resource&quot;: &quot;arn:aws:logs:*:*:*&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;Effect&quot;: &quot;Allow&quot;,</span><br><span class="line">      &quot;Action&quot;: &quot;s3:PutObject&quot;,</span><br><span class="line">      &quot;Resource&quot;: &quot;arn:aws:s3:::__YOUR_BUCKET_NAME_HERE__&#x2F;*&quot;    </span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>Lưu lại và test.</li>
+</ol>
+<h1 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận:"></a>Kết luận:</h1><p>Trên đây là cách resize hình ảnh trên S3 Amazon sử dụng Lambda function. Cảm ơn các bạn đã đọc.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/02/15/node-js-container-docker/" title="Node.js in Containers Using Docker"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/01/05/send-push-notification-sns-aws/" title="Send push notifications using Laravel and AWS SNS"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>

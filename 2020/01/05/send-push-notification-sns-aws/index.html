@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Send push notifications using Laravel and AWS SNS | Trần Đình Vĩ - blogs</title>
+  <meta name="description" content="1. Mở đầuPush notification là cách thức chuyển phát thông tin từ phía ứng dụng backend đến các thiết bị mobile mà không yêu cầu request từ người dùng cuối. Chúng ta có thể push notification từ ứng dụn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Send push notifications using Laravel and AWS SNS">
+<meta property="og:url" content="http://yoursite.com/2020/01/05/send-push-notification-sns-aws/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1. Mở đầuPush notification là cách thức chuyển phát thông tin từ phía ứng dụng backend đến các thiết bị mobile mà không yêu cầu request từ người dùng cuối. Chúng ta có thể push notification từ ứng dụn">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.viblo.asia/74c0c387-48df-405b-8ed1-6ecc22f937f1.png">
+<meta property="og:image" content="https://images.viblo.asia/4e339d38-c119-4812-8904-c34687f9dcba.png">
+<meta property="article:published_time" content="2020-01-05T00:26:16.000Z">
+<meta property="article:modified_time" content="2020-07-27T03:52:54.748Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="SNS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.viblo.asia/74c0c387-48df-405b-8ed1-6ecc22f937f1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://yoursite.com/2020/01/05/send-push-notification-sns-aws/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/trandinhvi39" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Trần Đình Vĩ</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">FullStack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Đà Nẵng, Việt Nam</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/PHP">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="https://github.com/trandinhvi39" target="_blank" rel="noopener">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/API-Gateway/" rel="tag">API Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/" rel="tag">AWS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/" rel="tag">Configuration</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Container/" rel="tag">Container</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/" rel="tag">Design Pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dusk/" rel="tag">Dusk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eager-Loading/" rel="tag">Eager Loading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/" rel="tag">EventBus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flux/" rel="tag">Flux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/" rel="tag">Lambda</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oauth2/" rel="tag">Oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Procedure/" rel="tag">Procedure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Repository/" rel="tag">Repository</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby-on-Rails/" rel="tag">Ruby on Rails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SNS/" rel="tag">SNS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scale/" rel="tag">Scale</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VueJS/" rel="tag">VueJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vuex/" rel="tag">Vuex</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/15/node-js-container-docker/" class="title">Node.js in Containers Using Docker</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-15T12:40:18.000Z" itemprop="datePublished">15-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/02/11/reside-image-with-aws/" class="title">Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-02-11T09:16:40.000Z" itemprop="datePublished">11-02-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/01/05/send-push-notification-sns-aws/" class="title">Send push notifications using Laravel and AWS SNS</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/20/laravel-view-page-counter/" class="title">Laravel Page View Counter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-20T04:44:16.000Z" itemprop="datePublished">20-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/procedure-laravel/" class="title">Creating MySQL Procedure in Laravel 5.4 Migrations</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T12:16:30.000Z" itemprop="datePublished">18-11-2019</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-send-push-notification-sns-aws" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Send push notifications using Laravel and AWS SNS
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/01/05/send-push-notification-sns-aws/" class="article-date">
+	  <time datetime="2020-01-05T00:26:16.000Z" itemprop="datePublished">05-01-2020</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/AWS/" rel="tag">AWS</a>, <a class="article-tag-link" href="/tags/Laravel/" rel="tag">Laravel</a>, <a class="article-tag-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link" href="/tags/SNS/" rel="tag">SNS</a>
+  </span>
+
+
+        
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="1-Mo-dau"><a href="#1-Mo-dau" class="headerlink" title="1. Mở đầu"></a>1. Mở đầu</h2><p>Push notification là cách thức chuyển phát thông tin từ phía ứng dụng backend đến các thiết bị mobile mà không yêu cầu request từ người dùng cuối. Chúng ta có thể push notification từ ứng dụng Laravel thông qua service của Amazon là SNS.<br>AWS SNS (Simple Notification Service) là một dịch vụ push notification một cách linh hoạt được cung cấp bởi Amazon web services.<br>Để tìm hiểu rõ hơn về SNS thì các bạn có thể vào link <a href="https://aws.amazon.com/sns/?sc_channel=PS&sc_campaign=acquisition_VN&sc_publisher=google&sc_medium=english_sns_b&sc_content=sns_bmm&sc_detail=%2Baws%20%2Bsns&sc_category=sns&sc_segment=186480076758&sc_matchtype=b&sc_country=VN&s_kwcid=AL!4422!3!186480076758!b!!g!!%2Baws%20%2Bsns&ef_id=WV3qIQAAAXJZMy8h:20180202064219:s" target="_blank" rel="noopener">này</a><br>Về chi phí thì các bạn có thể tham khảo link <a href="https://aws.amazon.com/sns/pricing/" target="_blank" rel="noopener">này</a><br>Bài viết này mình sẽ hướng dẫn các bạn từng bước để push notification trong ứng dụng Laravel sử dụng AWS SNS.</p>
+<h2 id="2-Config-AWS-SNS"><a href="#2-Config-AWS-SNS" class="headerlink" title="2. Config AWS SNS"></a>2. Config AWS SNS</h2><p>Đầu tiên bạn cài package aws-sdk-php-laravel <a href="https://github.com/aws/aws-sdk-php-laravel" target="_blank" rel="noopener">https://github.com/aws/aws-sdk-php-laravel</a> để cho phép ứng dụng Laravel thao tác với AWS. Cấu hình đầy đủ key vào file aws.php.<br>Để bắn về cho các thiết bị Android bạn cần tạo một ứng dụng trên Firebase, lấy Legacy server key để tạo một push notification platform, với Android thì chọn GCM, API key thì cho cái Legacy server key ở trên vào.<br> <img src="https://images.viblo.asia/74c0c387-48df-405b-8ed1-6ecc22f937f1.png" alt=""><br> Sau khi tạo thành công thì bạn lấy ARN cấu hình vào file .env của ứng dụng<br><code>ANDROID_APPLICATION_ARN=arn_here</code></p>
+<h2 id="3-Nhan-device-token-tu-mobile-de-request-lay-endpointArn"><a href="#3-Nhan-device-token-tu-mobile-de-request-lay-endpointArn" class="headerlink" title="3. Nhận device_token từ mobile để request lấy endpointArn"></a>3. Nhận device_token từ mobile để request lấy endpointArn</h2><p>Bước đầu tiên thì mình sẽ tạo bảng user_device_tokens nhé, quan hệ giữa bảng user và bảng này là: 1 - n.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">use Illuminate\Support\Facades\Schema;</span><br><span class="line">use Illuminate\Database\Schema\Blueprint;</span><br><span class="line">use Illuminate\Database\Migrations\Migration;</span><br><span class="line"></span><br><span class="line">class CreateUserDeviceTokensTable extends Migration</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Run the migrations.</span><br><span class="line">     *</span><br><span class="line">     * @return void</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public function up()</span><br><span class="line">    &#123;</span><br><span class="line">        Schema::create(&#39;user_device_tokens&#39;, function (Blueprint $table) &#123;</span><br><span class="line">            $table-&gt;increments(&#39;id&#39;);</span><br><span class="line">            $table-&gt;char(&#39;platform&#39;, 20)-&gt;default(&#39;android&#39;);</span><br><span class="line">            $table-&gt;string(&#39;device_token&#39;)-&gt;nullable();</span><br><span class="line">            $table-&gt;string(&#39;arn&#39;);</span><br><span class="line">            $table-&gt;string(&#39;subscription_arn&#39;)-&gt;nullable();</span><br><span class="line">            $table-&gt;integer(&#39;user_id&#39;)-&gt;index();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Reverse the migrations.</span><br><span class="line">     *</span><br><span class="line">     * @return void</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public function down()</span><br><span class="line">    &#123;</span><br><span class="line">        Schema::dropIfExists(&#39;user_device_tokens&#39;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bây giờ trong controller thì mình sẽ viết một hàm để nhận device_token mà mobile gửi lên rồi request lên SNS service để lấy endpointArn.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public function getDeviceToken(Request $request)</span><br><span class="line">&#123;</span><br><span class="line">    $input &#x3D; $request-&gt;only(&#39;user_id&#39;, &#39;platform&#39;, &#39;device_token&#39;);</span><br><span class="line">    try &#123;</span><br><span class="line">        $deviceToken &#x3D; UserDeviceToken::whereDeviceToken($input[&#39;device_token&#39;])-&gt;first();</span><br><span class="line"></span><br><span class="line">        if ($deviceToken &#x3D;&#x3D; null) &#123;</span><br><span class="line">            $platformApplicationArn &#x3D; &#39;&#39;;</span><br><span class="line"></span><br><span class="line">            if (isset($input[&#39;platform&#39;]) &amp;&amp; $input[&#39;platform&#39;] &#x3D;&#x3D; &#39;android&#39;) &#123;</span><br><span class="line">                $platformApplicationArn &#x3D; env(&#39;ANDROID_APPLICATION_ARN&#39;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            $client &#x3D; App::make(&#39;aws&#39;)-&gt;createClient(&#39;sns&#39;);</span><br><span class="line">            $result &#x3D; $client-&gt;createPlatformEndpoint(array(</span><br><span class="line">                &#39;PlatformApplicationArn&#39; &#x3D;&gt; $platformApplicationArn,</span><br><span class="line">                &#39;Token&#39; &#x3D;&gt; $input[&#39;device_token&#39;],</span><br><span class="line">            ));</span><br><span class="line"></span><br><span class="line">            $endPointArn &#x3D; isset($result[&#39;EndpointArn&#39;]) ? $result[&#39;EndpointArn&#39;] : &#39;&#39;;</span><br><span class="line">            $deviceToken &#x3D; new UserDeviceToken();</span><br><span class="line">            $deviceToken-&gt;platform &#x3D; $input[&#39;platform&#39;];</span><br><span class="line">            $deviceToken-&gt;device_token &#x3D; $input[&#39;device_token&#39;];</span><br><span class="line">            $deviceToken-&gt;arn &#x3D; $endPointArn;</span><br><span class="line">        &#125;</span><br><span class="line">        $deviceToken-&gt;user_id &#x3D; $input[&#39;user_id&#39;];</span><br><span class="line">        $deviceToken-&gt;save();</span><br><span class="line">    &#125; catch (SnsException $e) &#123;</span><br><span class="line">        return response()-&gt;json([&#39;error&#39; &#x3D;&gt; &quot;Unexpected Error&quot;], 500);</span><br><span class="line">    &#125;</span><br><span class="line">    return response()-&gt;json([&quot;status&quot; &#x3D;&gt; &quot;Device token processed&quot;], 200);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Có thể bạn thắc mắc hàm createPlatformEndpoint phải không, Tham khảo link <a href="https://docs.aws.amazon.com/sns/latest/api/" target="_blank" rel="noopener">này</a> nhé, đây là những hàm mà mình có thể dùng với thằng SNS này, cứ theo docs của nó mà tán thôi =))</p>
+<h2 id="4-Send-push-notification-tu-endpointArn"><a href="#4-Send-push-notification-tu-endpointArn" class="headerlink" title="4. Send push notification từ endpointArn"></a>4. Send push notification từ endpointArn</h2><p>Sau khi request lên aws để lấy về endpointArn, mình sẽ lưu giá trị này vào DB, và khi cần push notification thì publish đến các endpointArn này. Tham khảo method <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html" target="_blank" rel="noopener">này</a> nhé.<br>OK, bây giờ mình sẽ viết hàm để send push notification đến tất cả người dùng.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">public function sendPushNotification()</span><br><span class="line">&#123;</span><br><span class="line">    $notificationTitle &#x3D; &quot;Test Notification&quot;;</span><br><span class="line">    $notificationMessage &#x3D; &quot;Hi all&quot;;</span><br><span class="line">    $data &#x3D; [</span><br><span class="line">        &#39;type&#39; &#x3D;&gt; &#39;Notification&#39;</span><br><span class="line">    ];</span><br><span class="line">    $userDeviceTokens &#x3D; UserDeviceToken::get();</span><br><span class="line"></span><br><span class="line">    foreach ($userDeviceTokens as $userDeviceToken) &#123;</span><br><span class="line">        $deviceToken &#x3D; $userDeviceToken-&gt;device_token;</span><br><span class="line">        $endPointArn &#x3D; [</span><br><span class="line">            &#39;EndpointArn&#39; &#x3D;&gt; $deviceToken-&gt;arn</span><br><span class="line">        ];</span><br><span class="line">        try &#123;</span><br><span class="line">            $sns &#x3D; App::make(&#39;aws&#39;)-&gt;createClient(&#39;sns&#39;);</span><br><span class="line">            $endpointAtt &#x3D; $sns-&gt;getEndpointAttributes($endPointArn);</span><br><span class="line"></span><br><span class="line">            if ($endpointAtt !&#x3D; &#39;failed&#39; &amp;&amp; $endpointAtt[&#39;Attributes&#39;][&#39;Enabled&#39;]) &#123;</span><br><span class="line">                if ($deviceToken-&gt;platform &#x3D;&#x3D; &#39;android&#39;) &#123;</span><br><span class="line">                    $fcmPayload &#x3D; json_encode(</span><br><span class="line">                        [</span><br><span class="line">                            &#39;notification&#39;&#x3D;&gt;</span><br><span class="line">                                [</span><br><span class="line">                                    &#39;title&#39; &#x3D;&gt; $notificationTitle,</span><br><span class="line">                                    &quot;body&quot; &#x3D;&gt; $notificationMessage,</span><br><span class="line">                                    &#39;sound&#39; &#x3D;&gt; &#39;default&#39;</span><br><span class="line">                                ],</span><br><span class="line">                            &#39;data&#39; &#x3D;&gt; $data</span><br><span class="line">                        ]</span><br><span class="line">                    );</span><br><span class="line">                    $message &#x3D; json_encode([</span><br><span class="line">                        &#39;default&#39; &#x3D;&gt; $notificationMessage,</span><br><span class="line">                        &#39;GCM&#39; &#x3D;&gt; $fcmPayload</span><br><span class="line">                    ]);</span><br><span class="line">                    $sns-&gt;publish([</span><br><span class="line">                        &#39;TargetArn&#39; &#x3D;&gt; $deviceToken-&gt;arn,</span><br><span class="line">                        &#39;Message&#39; &#x3D;&gt; $message,</span><br><span class="line">                        &#39;MessageStructure&#39; &#x3D;&gt; &#39;json&#39;</span><br><span class="line">                    ]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (SnsException $e) &#123;</span><br><span class="line">            Log::info($e-&gt;getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Đọc đến đây, có bạn nghĩ thầm rằng, cái thằng ngáo này, lấy tất cả records trong bảng user_device_tokens rồi foreach để gửi cho từng thằng thì có mà chờ đến mùa quýt mới xong à.<br>Ukm, các bạn đúng, không ai làm như thế cả, thực ra SNS nó hổ trợ 2 cơ chế push notification, cơ chế đầu tiên là publish đến từng endpointArn, cái mà mình đã làm ở trên, cơ chế thứ 2 là tạo một topic, và sử dụng endpointArn để subscribe topic đó, khi muốn push notification thì mình cứ publish lên topic đó thì những thằng subscribe topic này sẽ nhận được. Bây giờ triển theo cách này thôi.</p>
+<p>Bạn tạo một topic rồi lấy topic arn cấu hình vào file .env<br><code>TOPIC_ARN=topic_arn_here</code></p>
+<p><img src="https://images.viblo.asia/4e339d38-c119-4812-8904-c34687f9dcba.png" alt=""><br>Bây giờ mình sẽ viết hàm subscribeDeviceTokenToTopic, unsubscribeDeviceTokenToTopic và publishToTopic như sau, các bạn để ý là sau khi subscribe topic thành công thì nó sẽ trả về cho chúng ta SubscriptionArn dùng để unsubscribe sau này, ở trên khi tạo table user_device_tokens thì mình có thêm field này vào rồi.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public function subscribeDeviceTokenToTopic($endPointArn)</span><br><span class="line">&#123;</span><br><span class="line">     $sns &#x3D; App::make(&#39;aws&#39;)-&gt;createClient(&#39;sns&#39;);</span><br><span class="line">     $result &#x3D; $sns-&gt;subscribe([</span><br><span class="line">         &#39;Endpoint&#39; &#x3D;&gt; $endPointArn,</span><br><span class="line">         &#39;Protocol&#39; &#x3D;&gt; &#39;application&#39;,</span><br><span class="line">         &#39;TopicArn&#39; &#x3D;&gt; env(&#39;TOPIC_ARN&#39;),</span><br><span class="line">     ]);</span><br><span class="line"></span><br><span class="line">     return $result[&#39;SubscriptionArn&#39;] ?? &#39;&#39;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public function unsubscribeDeviceTokenToTopic($subscriptionArn)</span><br><span class="line">&#123;</span><br><span class="line">     $sns &#x3D; App::make(&#39;aws&#39;)-&gt;createClient(&#39;sns&#39;);</span><br><span class="line">     $sns-&gt;unsubscribe([</span><br><span class="line">         &#39;SubscriptionArn&#39; &#x3D;&gt; $subscriptionArn,</span><br><span class="line">     ]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public function publishToTopic($message)</span><br><span class="line">&#123;</span><br><span class="line">    $sns &#x3D; App::make(&#39;aws&#39;)-&gt;createClient(&#39;sns&#39;);</span><br><span class="line">    $result &#x3D; $sns-&gt;publish([</span><br><span class="line">        &#39;Message&#39; &#x3D;&gt; $message,</span><br><span class="line">        &#39;MessageStructure&#39; &#x3D;&gt; &#39;json&#39;,</span><br><span class="line">        &#39;TopicArn&#39; &#x3D;&gt; env(&#39;TOPIC_ARN&#39;),</span><br><span class="line">    ]);</span><br><span class="line"></span><br><span class="line">    return $result[&#39;MessageId&#39;] ?? &#39;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Bây giờ cứ mỗi khi mobile gửi device_token lên thì sau khi request để lấy endpointArn thì dùng endpointArn này để subscribe topic luôn, để send push notification bạn gọi hàm publishToTopic.</p>
+<h2 id="5-Ket-luan"><a href="#5-Ket-luan" class="headerlink" title="5. Kết luận"></a>5. Kết luận</h2><p>Trên đây là chia sẽ sử dụng AWS SNS trong Laravel. Chi tiết các API mà SNS cung cấp bạn có thể tham khảo ở link <a href="https://docs.aws.amazon.com/sns/latest/api/Welcome.html" target="_blank" rel="noopener">này</a>. Cảm ơn các bạn đã đọc</p>
+
+      
+    </div>
+    <div class="article-footer">
+      
+    </div>
+  </article>
+  
+    
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/02/11/reside-image-with-aws/" title="Resize hình ảnh với Amazon S3, AWS Lambda và Amazon API Gateway"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/11/20/laravel-view-page-counter/" title="Laravel Page View Counter"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="twitter,facebook" data-mobile-sites=""></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+
+
+
+
+
+
+</body>
+</html>
